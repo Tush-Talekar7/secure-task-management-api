@@ -1,12 +1,17 @@
 package com.app.secure_user_api.service;
 
+import com.app.secure_user_api.dto.RefreshTokenRequestDTO;
 import com.app.secure_user_api.dto.RegisterRequestDTO;
+import com.app.secure_user_api.entity.RefreshToken;
 import com.app.secure_user_api.entity.Role;
 import com.app.secure_user_api.entity.User;
 import com.app.secure_user_api.exception.BadRequestException;
+import com.app.secure_user_api.repository.RefreshTokenRepository;
 import com.app.secure_user_api.repository.UserRepository;
+import com.app.secure_user_api.response.ApiResponse;
 import com.app.secure_user_api.security.JwtService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -25,7 +30,9 @@ public class AuthService {
 
     private final JwtService jwtService;
 
+    private final RefreshTokenService refreshTokenService;
 
+    private final RefreshTokenRepository refreshTokenRepository;
 
     public String register(RegisterRequestDTO request) {
 
@@ -61,6 +68,39 @@ public class AuthService {
         user.setUsername(username);
         user.setPassword(password);
         return jwtService.generateToken(user);
+    }
+
+    public RefreshTokenRequestDTO getRefreshToken(RefreshTokenRequestDTO refreshDTO){
+
+        String requestToken = refreshDTO.getRefreshToken();
+
+        RefreshToken refreshToken = refreshTokenRepository.findByToken(requestToken)
+                .orElseThrow(() -> new RuntimeException("Refresh token not found"));
+
+        refreshTokenService.verifyExpiration(refreshToken);
+
+        User user = refreshToken.getUser();
+
+        // DELETE OLD TOKEN (Rotation)
+        refreshTokenRepository.delete(refreshToken);
+
+        // CREATE NEW TOKENS
+        String newAccessToken = jwtService.generateToken(user);
+        RefreshToken newRefreshToken = refreshTokenService.createRefreshToken(user);
+
+        return new RefreshTokenRequestDTO(newAccessToken,newRefreshToken.getToken());
+
+    }
+
+    public String logout(String username){
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        refreshTokenService.deleteByUser(user);
+
+        return "Logout Successful";
+
     }
 
 

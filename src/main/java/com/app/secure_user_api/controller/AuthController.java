@@ -3,11 +3,19 @@ package com.app.secure_user_api.controller;
 
 import com.app.secure_user_api.dto.AuthResponseDTO;
 import com.app.secure_user_api.dto.LoginRequestDTO;
+import com.app.secure_user_api.dto.RefreshTokenRequestDTO;
 import com.app.secure_user_api.dto.RegisterRequestDTO;
+import com.app.secure_user_api.entity.RefreshToken;
+import com.app.secure_user_api.entity.User;
+import com.app.secure_user_api.repository.RefreshTokenRepository;
+import com.app.secure_user_api.response.ApiResponse;
+import com.app.secure_user_api.security.JwtService;
 import com.app.secure_user_api.service.AuthService;
+import com.app.secure_user_api.service.RefreshTokenService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthService authService;
+
 
     @PostMapping("/register")
     public ResponseEntity<String> register(
@@ -42,6 +51,19 @@ public class AuthController {
                         .token(token)
                         .build()
         );
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<?> refreshToken(@RequestBody RefreshTokenRequestDTO request) {
+        return ResponseEntity.ok(new ApiResponse<>(true,"Success",
+                authService.getRefreshToken(request)));
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(Authentication authentication) {
+
+        return ResponseEntity.ok(new ApiResponse<>(true,"Success",
+                authService.logout(authentication.getName())));
     }
 
 
