@@ -5,13 +5,8 @@ import com.app.secure_user_api.dto.AuthResponseDTO;
 import com.app.secure_user_api.dto.LoginRequestDTO;
 import com.app.secure_user_api.dto.RefreshTokenRequestDTO;
 import com.app.secure_user_api.dto.RegisterRequestDTO;
-import com.app.secure_user_api.entity.RefreshToken;
-import com.app.secure_user_api.entity.User;
-import com.app.secure_user_api.repository.RefreshTokenRepository;
 import com.app.secure_user_api.response.ApiResponse;
-import com.app.secure_user_api.security.JwtService;
 import com.app.secure_user_api.service.AuthService;
-import com.app.secure_user_api.service.RefreshTokenService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -27,14 +22,12 @@ public class AuthController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(
+    public ResponseEntity<Void> register(
             @Valid @RequestBody RegisterRequestDTO request) {
 
-        String message = authService.register(request);
+        authService.register(request);
 
-        return ResponseEntity.ok(
-                "Registraion Successful"
-        );
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/login")
@@ -65,7 +58,5 @@ public class AuthController {
         return ResponseEntity.ok(new ApiResponse<>(true,"Success",
                 authService.logout(authentication.getName())));
     }
-
-
 }
 

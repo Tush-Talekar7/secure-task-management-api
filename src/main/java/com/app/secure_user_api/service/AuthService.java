@@ -8,15 +8,12 @@ import com.app.secure_user_api.entity.User;
 import com.app.secure_user_api.exception.BadRequestException;
 import com.app.secure_user_api.repository.RefreshTokenRepository;
 import com.app.secure_user_api.repository.UserRepository;
-import com.app.secure_user_api.response.ApiResponse;
 import com.app.secure_user_api.security.JwtService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 
 @Service
 @RequiredArgsConstructor

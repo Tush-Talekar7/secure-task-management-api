@@ -8,10 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/tasks")
@@ -72,10 +69,6 @@ public class TaskController {
                 )
         );
     }
-
-
-
-
 
     @PutMapping("/get-task/{id}")
     public ResponseEntity<Task> update(@PathVariable Long id,

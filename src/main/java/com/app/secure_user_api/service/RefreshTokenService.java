@@ -3,21 +3,18 @@ package com.app.secure_user_api.service;
 import com.app.secure_user_api.entity.RefreshToken;
 import com.app.secure_user_api.entity.User;
 import com.app.secure_user_api.repository.RefreshTokenRepository;
-import com.app.secure_user_api.repository.UserRepository;
 import com.app.secure_user_api.security.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.UUID;
+
 
 @Service
 @RequiredArgsConstructor
 public class RefreshTokenService {
 
     private final RefreshTokenRepository repository;
-
-    private final UserRepository userRepository;
 
     private final JwtService jwtService;
 
